@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+    <title>Daemon Conexão</title>
+    <meta charset="UTF-8">
+    <script src="./jquery/jquery-3.4.1.min.js"></script>
+    <script src="./momentjs/moment.min.js"></script>
+    <script src="./daemon.js"></script>
+</head>
+<body>
+    <h1>Não feche esta janela</h1>
+    <p>Status da Conexão: <span id="conexaoStatus"></span></p>
+    <p>Ultima resposta: <span id="response"></span></p>
+    <div id="log">
+    </div>
+    <p>Pagina de Login</p>
+    <div id="paginaLogin"></div>
+    
+    <script>
+        $(document).ready(()=>{
+            //verificaConectividade();
+            loginProxy();
+        })
+
+        function verificaConectividade() {
+            $('conexaoStatus').empty().append('<img src="./loader/blue.svg" width="20px"/>');
+            url = 'https://api.openweathermap.org/data/2.5/weather?q=Seropedica&appid=31be04b6b19ed74e39655fd773ff1072&units=metric';
+            ajaxLoadGET(url, parseResponse)
+        }
+        function parseResponse(response,status){
+            determinaAcao(status);
+            try{
+                let json = JSON.parse(response);
+                resposta = 
+                'Local: '+json.name+
+                '<br/>Temperatura: '+json.main.temp+
+                '<br/>Minima: '+json.main.temp_min+
+                '<br/>Maxima: '+json.main.temp_max
+            }catch(e){
+                resposta = e;
+                console.log(json)
+            }
+            $('#response').empty().append( resposta );
+            
+        }
+
+        function determinaAcao(status) {
+            feedBack = $('#conexaoStatus')
+            feedBack.empty().append((status == 200)? '200 Conectado': status+' Erro');
+            if(status == 200){
+                //não precisa de Login
+            }else{
+                loginProxy();
+            }
+        }
+
+        function loginProxy() {
+            host = 'http://10.0.0.103/ced';
+            url = `${host}/portal/controle/login.php?req=processaLogin`;
+            parametros = {login: 'master_adm',senha: '123'}
+            $.post(url,parametros)
+                .done((response)=>{
+                    $('#paginaLogin').empty().append(response);
+                });
+        }
+    </script>
+</body>
+</html>
