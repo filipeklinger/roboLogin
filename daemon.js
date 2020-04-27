@@ -66,9 +66,14 @@ function determinaAcao(status) {
 }
 
 function loginProxy() {
-    host = 'http://10.0.0.103/ced';
-    url = `${host}/portal/controle/login.php?req=processaLogin`;
-    parametros = {login: 'master_adm',senha: '123'}
+    url = `https://gwadm.ufrrj.br:8009/index.php?zone=ufrrj`;
+    parametros = {
+        auth_user: 'filipe',
+        auth_pass: '37056909',
+        redirurl: 'https://gwadm.ufrrj.br:7443',
+        zone: 'ufrrj',
+        mybox: 'on'
+    }
     $.post(url,parametros)
         .done((response)=>{
             $('#paginaLogin').empty().append(response);
