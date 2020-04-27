@@ -68,8 +68,8 @@ function determinaAcao(status) {
 function loginProxy() {
     url = `https://gwadm.ufrrj.br:8009/index.php?zone=ufrrj`;
     parametros = {
-        auth_user: 'filipe',
-        auth_pass: '37056909',
+        auth_user: '-----',
+        auth_pass: '*****',
         redirurl: 'https://gwadm.ufrrj.br:7443',
         zone: 'ufrrj',
         mybox: 'on'
