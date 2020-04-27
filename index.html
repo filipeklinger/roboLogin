@@ -3,12 +3,13 @@
     <title>Daemon Conexão</title>
     <meta charset="UTF-8">
     <script src="./jquery/jquery-3.4.1.min.js"></script>
-    <script src="./momentjs/moment.min.js"></script>
+    <script src="./momentjs/moment-with-locales.min.js"></script>
     <script src="./daemon.js"></script>
 </head>
 <body>
     <h1>Não feche esta janela</h1>
     <p>Status da Conexão: <span id="conexaoStatus"></span></p>
+    <p>Ultima verificacao: <span id="ultimaVer"></span></p>
     <p>Ultima resposta: <span id="response"></span></p>
     <div id="log">
     </div>
@@ -17,11 +18,14 @@
     
     <script>
         $(document).ready(()=>{
-            //verificaConectividade();
-            loginProxy();
+            verificaConectividade();
+            umMinuto = 60000;
+            setInterval(verificaConectividade, 5*umMinuto)
         })
 
         function verificaConectividade() {
+            moment.locale('pt-br');
+            $('#ultimaVer').empty().append(moment().format('D MMMM  YYYY, HH:mm:ss'))
             $('conexaoStatus').empty().append('<img src="./loader/blue.svg" width="20px"/>');
             url = 'https://api.openweathermap.org/data/2.5/weather?q=Seropedica&appid=31be04b6b19ed74e39655fd773ff1072&units=metric';
             ajaxLoadGET(url, parseResponse)
@@ -45,7 +49,7 @@
 
         function determinaAcao(status) {
             feedBack = $('#conexaoStatus')
-            feedBack.empty().append((status == 200)? '200 Conectado': status+' Erro');
+            feedBack.empty().append((status == 200)? '200 Conectado': status+' Tentando Reconectar');
             if(status == 200){
                 //não precisa de Login
             }else{
@@ -60,6 +64,8 @@
             $.post(url,parametros)
                 .done((response)=>{
                     $('#paginaLogin').empty().append(response);
+                    umSegundo = 1000;
+                    setTimeout(verificaConectividade,30*umSegundo);
                 });
         }
     </script>
